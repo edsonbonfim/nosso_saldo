@@ -2,11 +2,11 @@ import 'package:meta/meta.dart';
 
 abstract class LoginEvent {}
 
-class LoginButtonPressed extends LoginEvent {
+class Login extends LoginEvent {
   final String username;
   final String password;
 
-  LoginButtonPressed({
+  Login({
     @required this.username,
     @required this.password,
   });

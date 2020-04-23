@@ -3,26 +3,36 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../controllers/authentication/authentication_bloc.dart';
 import '../../controllers/login/login_bloc.dart';
-import '../../services/user_repository.dart';
+import '../signup/signup_page.dart';
 import 'login_form.dart';
 
-class LoginPage extends StatelessWidget {
-  final UserRepository userRepository;
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
 
-  LoginPage({Key key, @required this.userRepository})
-      : assert(userRepository != null),
-        super(key: key);
+class _LoginPageState extends State<LoginPage> {
+  LoginBloc loginBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    loginBloc = LoginBloc(
+      authenticationBloc: BlocProvider.of<AuthenticationBloc>(context),
+    );
+  }
+
+  // @override
+  // void dispose() {
+  //   loginBloc.close();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocProvider(
-        create: (context) {
-          return LoginBloc(
-            authenticationBloc: BlocProvider.of<AuthenticationBloc>(context),
-            userRepository: userRepository,
-          );
-        },
+      body: BlocProvider.value(
+        value: loginBloc,
         child: Center(
           child: Container(
             constraints: BoxConstraints(
@@ -34,11 +44,12 @@ class LoginPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Center(
-                  child: SizedBox(
-                    width: 150,
-                    height: 150,
-                    child: Image.network(
-                      "https://i.imgur.com/QrJfQwV.png",
+                  child: Hero(
+                    tag: "logo",
+                    child: SizedBox(
+                      width: 150,
+                      height: 150,
+                      child: Image.asset("assets/images/logo.png"),
                     ),
                   ),
                 ),
@@ -62,7 +73,36 @@ class LoginPage extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                LoginForm(),
+                Column(
+                  children: [
+                    LoginForm(),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: FlatButton(
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SignupPage(
+                                    loginBloc: loginBloc,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              "Cadastre-se",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w300,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                )
               ],
             ),
           ),

@@ -3,37 +3,33 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
-import '../../services/user_repository.dart';
 import '../authentication/authentication_bloc.dart';
 import '../authentication/authentication_event.dart';
 import 'login_event.dart';
 import 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final UserRepository userRepository;
   final AuthenticationBloc authenticationBloc;
 
   LoginBloc({
-    @required this.userRepository,
     @required this.authenticationBloc,
-  })  : assert(userRepository != null),
-        assert(authenticationBloc != null);
+  }) : assert(authenticationBloc != null);
 
   LoginState get initialState => LoginInitial();
 
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
-    if (event is LoginButtonPressed) {
+    if (event is Login) {
       yield LoginLoading();
 
       try {
-        final token = await userRepository.authenticate(
+        var token = await authenticationBloc.userRepository.authenticate(
           username: event.username,
           password: event.password,
         );
 
         authenticationBloc.add(LoggedIn(token: token));
-        yield LoginInitial();
+        // yield LoginInitial();
       } on FormatException catch (error) {
         yield LoginFailure(error: error.message);
       }

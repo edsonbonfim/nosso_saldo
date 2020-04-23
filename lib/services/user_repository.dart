@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 import 'package:meta/meta.dart';
@@ -7,24 +9,8 @@ class UserRepository {
     baseUrl: "https://api.nossosaldo.life",
   ));
 
-  Future<String> authenticate({
-    @required String username,
-    @required String password,
-  }) async {
-    final response = await dio.post("/sessions", data: {
-      "email": username,
-      "password": password,
-    });
-
-    if (response.statusCode != 200) {
-      throw FormatException(response.statusMessage);
-    }
-
-    if (response.data["err"] != null) {
-      throw FormatException(response.data["err"]);
-    }
-
-    return response.data["token"];
+  String get token {
+    return Hive.box("settings").get("token");
   }
 
   Future<void> deleteToken() async {
@@ -38,5 +24,78 @@ class UserRepository {
 
   bool hasToken() {
     return Hive.box("settings").containsKey("token");
+  }
+
+  Future<String> authenticate({
+    @required String username,
+    @required String password,
+  }) async {
+    var response = await dio.post("/sessions", data: {
+      "email": username,
+      "password": password,
+    });
+
+    if (response.statusCode != 200) {
+      throw FormatException(response.statusMessage);
+    }
+
+    if (response.data["err"] != null || response.data["token"] == null) {
+      throw FormatException(
+        response.data["err"] ?? "Ocorreu um erro, tente novamente",
+      );
+    }
+
+    return response.data["token"];
+  }
+
+  Future<String> signup({
+    @required String name,
+    @required String email,
+    @required String password,
+  }) async {
+    var response = await dio.post("/user/create", data: {
+      "name": name,
+      "email": email,
+      "password": password,
+    });
+
+    if (response.statusCode != 200) {
+      throw FormatException(response.statusMessage);
+    }
+
+    if (response.data["err"] != null || response.data["message"] == null) {
+      throw FormatException(
+        response.data["err"] ?? "Ocorreu um erro, tente novamente",
+      );
+    }
+
+    return response.data["message"];
+  }
+
+  void addAuthorizationHeader() {
+    dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (RequestOptions options) =>
+          options..headers[HttpHeaders.authorizationHeader] = "Bearer " + token,
+    ));
+  }
+
+  Future<String> inviteFriend({@required String emailToInvite}) async {
+    addAuthorizationHeader();
+
+    var response = await dio.post('/friendRequest/add', data: {
+      "emailToInvite": emailToInvite,
+    });
+
+    if (response.statusCode != 200) {
+      throw new FormatException(response.statusMessage);
+    }
+
+    if (response.data["err"] != null || response.data["message"] == null) {
+      throw FormatException(
+        response.data["err"] ?? "Ocorreu um erro, tente novamente",
+      );
+    }
+
+    return response.data["message"];
   }
 }

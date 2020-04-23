@@ -3,17 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'controllers/authentication/authentication_bloc.dart';
 import 'controllers/authentication/authentication_state.dart';
-import 'pages/home/home_page.dart';
 import 'pages/login/login_indicator.dart';
 import 'pages/login/login_page.dart';
+import 'pages/main/main_page.dart';
 import 'pages/splash/splash_page.dart';
-import 'services/user_repository.dart';
 
 class App extends StatelessWidget {
-  final UserRepository userRepository;
-
-  App({Key key, @required this.userRepository}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -23,10 +18,11 @@ class App extends StatelessWidget {
             return SplashPage();
           }
           if (state is AuthenticationAuthenticated) {
-            return HomePage();
+            print("UHUUUUUUUUUUUUUUUUUUUUUUUU");
+            return MainPage();
           }
           if (state is AuthenticationUnauthenticated) {
-            return LoginPage(userRepository: userRepository);
+            return LoginPage();
           }
           if (state is AuthenticationLoading) {
             return LoadingIndicator();
@@ -37,13 +33,15 @@ class App extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: const Color(0xff181F3D),
+        canvasColor: const Color(0xff181F3D),
         colorScheme: Theme.of(context).colorScheme.copyWith(
-              primary: const Color(0xffDA2157),
+              primary: const Color(0xffE42A61),
               secondary: const Color(0xff232C51),
               onSecondary: const Color(0xff2EB9E9),
             ),
         fontFamily: "Montserrat",
       ),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'app.dart';
@@ -15,7 +17,7 @@ import 'services/user_repository.dart';
 class SimpleBlocDelegate extends BlocDelegate {
   @override
   void onEvent(Bloc bloc, Object event) {
-    print(event);
+    // print(event);
     super.onEvent(bloc, event);
   }
 
@@ -27,7 +29,7 @@ class SimpleBlocDelegate extends BlocDelegate {
 
   @override
   void onError(Bloc bloc, Object error, StackTrace stackTrace) {
-    print(error);
+    // print(error);
     super.onError(bloc, error, stackTrace);
   }
 }
@@ -54,6 +56,11 @@ Future<Box> openBox() async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  final lang = "pt_BR";
+
+  Intl.defaultLocale = lang;
+  await initializeDateFormatting(lang, null);
+
   await openBox();
 
   BlocSupervisor.delegate = SimpleBlocDelegate();
@@ -66,7 +73,7 @@ void main() async {
         return AuthenticationBloc(userRepository: userRepository)
           ..add(AppStarted());
       },
-      child: App(userRepository: userRepository),
+      child: App(),
     ),
   );
 }
