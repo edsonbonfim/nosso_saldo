@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:nosso_saldo/controllers/transaction/transaction_state.dart';
-import 'package:nosso_saldo/models/transaction.dart';
 
 import '../controllers/list_friends/list_friends_state.dart';
+import '../controllers/transaction/transaction_state.dart';
 import '../models/friend.dart';
+import '../models/transaction.dart';
 
 class APIService {
   Dio dio;
@@ -31,6 +31,10 @@ class APIService {
 
       if (response.data["err"] != null) {
         return ListFriendsError(message: response.data["err"]);
+      }
+
+      if (response.data["empty"] != null) {
+        return ListFriendsEmpty();
       }
 
       var rawFriends = response.data["formattedData"] as List;

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nosso_saldo/pages/friendy/friend_page.dart';
-import 'package:nosso_saldo/shared/friend_tile.dart';
 
 import '../../controllers/authentication/authentication_bloc.dart';
 import '../../controllers/list_friends/list_friends_bloc.dart';
 import '../../controllers/list_friends/list_friends_event.dart';
 import '../../controllers/list_friends/list_friends_state.dart';
 import '../../models/friend.dart';
+import '../../shared/custom_card.dart';
+import '../../shared/friend_tile.dart';
+import '../friendy/friend_page.dart';
 
 class ListFriends extends StatelessWidget {
   @override
@@ -32,8 +33,29 @@ class ListFriends extends StatelessWidget {
           if (state is ListFriendsSuccess) {
             return _list(context, state.friends);
           }
+          if (state is ListFriendsEmpty) {
+            return _empty(context);
+          }
           return SizedBox();
         },
+      ),
+    );
+  }
+
+  Widget _empty(BuildContext context) {
+    return CustomCard(
+      title: "Amigos",
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 20),
+        width: double.infinity,
+        child: Text(
+          "Convide algum usuário para iniciar",
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w300,
+          ),
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }

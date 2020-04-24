@@ -5,6 +5,8 @@ class ListFriendsState {}
 
 class ListFriendsLoading extends ListFriendsState {}
 
+class ListFriendsEmpty extends ListFriendsState {}
+
 class ListFriendsError extends ListFriendsState {
   final String message;
 
