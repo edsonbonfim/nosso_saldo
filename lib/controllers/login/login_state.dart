@@ -7,10 +7,10 @@ class LoginInitial extends LoginState {}
 class LoginLoading extends LoginState {}
 
 class LoginFailure extends LoginState {
-  final String error;
+  final String message;
 
-  LoginFailure({@required this.error});
+  LoginFailure({@required this.message});
 
   @override
-  String toString() => 'LoginFailure { error: $error }';
+  String toString() => 'LoginFailure { error: $message }';
 }

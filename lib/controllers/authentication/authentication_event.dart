@@ -13,4 +13,8 @@ class LoggedIn extends AuthenticationEvent {
   String toString() => 'LoggedIn { token: $token }';
 }
 
+class LoginScreen extends AuthenticationEvent {}
+
+class SignUpScreen extends AuthenticationEvent {}
+
 class LoggedOut extends AuthenticationEvent {}

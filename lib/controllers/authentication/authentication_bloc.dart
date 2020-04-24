@@ -27,8 +27,16 @@ class AuthenticationBloc
       if (hasToken) {
         yield AuthenticationAuthenticated();
       } else {
-        yield AuthenticationUnauthenticated();
+        yield AuthenticationLogin();
       }
+    }
+
+    if (event is LoginScreen) {
+      yield AuthenticationLogin();
+    }
+
+    if (event is SignUpScreen) {
+      yield AuthenticationSignUp();
     }
 
     if (event is LoggedIn) {
@@ -40,7 +48,7 @@ class AuthenticationBloc
     if (event is LoggedOut) {
       yield AuthenticationLoading();
       await userRepository.deleteToken();
-      yield AuthenticationUnauthenticated();
+      yield AuthenticationLogin();
     }
   }
 }

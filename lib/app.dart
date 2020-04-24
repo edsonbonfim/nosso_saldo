@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nosso_saldo/pages/signup/signup_page.dart';
 
 import 'controllers/authentication/authentication_bloc.dart';
 import 'controllers/authentication/authentication_state.dart';
@@ -18,11 +19,13 @@ class App extends StatelessWidget {
             return SplashPage();
           }
           if (state is AuthenticationAuthenticated) {
-            print("UHUUUUUUUUUUUUUUUUUUUUUUUU");
             return MainPage();
           }
-          if (state is AuthenticationUnauthenticated) {
+          if (state is AuthenticationLogin) {
             return LoginPage();
+          }
+          if (state is AuthenticationSignUp) {
+            return SignupPage();
           }
           if (state is AuthenticationLoading) {
             return LoadingIndicator();

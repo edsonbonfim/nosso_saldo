@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nosso_saldo/shared/btn.dart';
-import 'package:nosso_saldo/shared/toogle.dart';
 
 import '../../controllers/login/login_bloc.dart';
 import '../../controllers/login/login_event.dart';
 import '../../controllers/login/login_state.dart';
+import '../../shared/btn.dart';
 import '../../shared/input.dart';
+import '../../shared/toogle.dart';
 
 class LoginForm extends StatefulWidget {
   @override
@@ -14,45 +14,63 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
+  TextEditingController _emailController;
+  TextEditingController _passwordController;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
-      listener: (context, state) {
-        if (state is LoginFailure) {
-          Toogle.show(context: context, label: state.error);
-        }
-      },
+      listener: _listenerState,
       child: Form(
         child: Column(
           children: [
             Input(
               hintText: "E-mail",
-              controller: _usernameController,
+              controller: _emailController,
             ),
             Input(
               hintText: "Senha",
               controller: _passwordController,
               obscureText: true,
             ),
-            BlocBuilder<LoginBloc, LoginState>(
-              builder: (context, state) => Btn(
-                label: "Entrar",
-                onPressed: state is! LoginLoading ? _login : null,
-              ),
-            ),
+            BlocBuilder<LoginBloc, LoginState>(builder: _loginBtn),
           ],
         ),
       ),
     );
   }
 
-  _login() {
+  Widget _loginBtn(BuildContext context, LoginState state) {
+    return Btn(
+      label: "Entrar",
+      onPressed: state is! LoginLoading ? _login : null,
+    );
+  }
+
+  void _listenerState(BuildContext context, LoginState state) {
+    if (state is LoginFailure) {
+      Toogle.show(context: context, label: state.message);
+    }
+  }
+
+  void _login() {
     BlocProvider.of<LoginBloc>(context).add(
-      Login(
-        username: _usernameController.text,
+      FetchToken(
+        email: _emailController.text,
         password: _passwordController.text,
       ),
     );

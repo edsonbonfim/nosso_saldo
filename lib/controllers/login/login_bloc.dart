@@ -19,19 +19,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
-    if (event is Login) {
+    if (event is FetchToken) {
       yield LoginLoading();
 
       try {
         var token = await authenticationBloc.userRepository.authenticate(
-          username: event.username,
+          username: event.email,
           password: event.password,
         );
 
         authenticationBloc.add(LoggedIn(token: token));
         // yield LoginInitial();
       } on FormatException catch (error) {
-        yield LoginFailure(error: error.message);
+        yield LoginFailure(message: error.message);
       }
     }
   }

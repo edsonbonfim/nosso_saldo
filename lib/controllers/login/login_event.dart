@@ -2,16 +2,16 @@ import 'package:meta/meta.dart';
 
 abstract class LoginEvent {}
 
-class Login extends LoginEvent {
-  final String username;
+class FetchToken extends LoginEvent {
+  final String email;
   final String password;
 
-  Login({
-    @required this.username,
+  FetchToken({
+    @required this.email,
     @required this.password,
   });
 
   @override
   String toString() =>
-      'LoginButtonPressed { username: $username, password: $password }';
+      'LoginButtonPressed { username: $email, password: $password }';
 }

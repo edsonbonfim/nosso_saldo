@@ -1,23 +1,24 @@
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
-import 'package:nosso_saldo/controllers/login/login_event.dart';
 
-import '../login/login_bloc.dart';
+import '../authentication/authentication_bloc.dart';
+import '../authentication/authentication_event.dart';
 import 'signup_event.dart';
 import 'signup_state.dart';
 
 class SignupBloc extends Bloc<SignupEvent, SignupState> {
-  final LoginBloc loginBloc;
+  final AuthenticationBloc authenticationBloc;
 
-  SignupBloc({@required this.loginBloc});
+  SignupBloc({@required this.authenticationBloc})
+      : assert(authenticationBloc != null);
 
   @override
   SignupState get initialState => SignupInitial();
 
   @override
   Stream<SignupState> mapEventToState(SignupEvent event) async* {
-    if (event is Signup) {
+    if (event is CreateAccount) {
       yield SignupLoading();
 
       var name = event.name;
@@ -60,17 +61,20 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
       }
 
       try {
-        await loginBloc.authenticationBloc.userRepository.signup(
+        // TODO: Retornar o token quando realizar o cadastro
+        await authenticationBloc.userRepository.signup(
           name: name,
           email: email,
           password: pass,
         );
 
-        // make login
-        loginBloc.add(Login(
+        var token = await authenticationBloc.userRepository.authenticate(
           username: email,
           password: pass,
-        ));
+        );
+
+        // make login
+        authenticationBloc.add(LoggedIn(token: token));
       } on FormatException catch (ex) {
         yield SignupError(message: ex.message);
       } on DioError catch (ex) {

@@ -6,6 +6,7 @@ import '../../controllers/signup/signup_event.dart';
 import '../../controllers/signup/signup_state.dart';
 import '../../shared/btn.dart';
 import '../../shared/input.dart';
+import '../../shared/toogle.dart';
 
 class SignupForm extends StatefulWidget {
   @override
@@ -13,57 +14,77 @@ class SignupForm extends StatefulWidget {
 }
 
 class _SignupFormState extends State<SignupForm> {
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _password2Controller = TextEditingController();
+  TextEditingController _nameController;
+  TextEditingController _emailController;
+  TextEditingController _passwordController;
+  TextEditingController _password2Controller;
 
-  // @override
-  // void dispose() {
-  //   _nameController.dispose();
-  //   _emailController.dispose();
-  //   _passwordController.dispose();
-  //   _password2Controller.dispose();
-  //   super.dispose();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController();
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+    _password2Controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _password2Controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      child: Column(
-        children: [
-          Input(
-            hintText: "Nome",
-            controller: _nameController,
-          ),
-          Input(
-            hintText: "E-mail",
-            controller: _emailController,
-          ),
-          Input(
-            hintText: "Senha",
-            controller: _passwordController,
-            obscureText: true,
-          ),
-          Input(
-            hintText: "Confirmar senha",
-            controller: _password2Controller,
-            obscureText: true,
-          ),
-          BlocBuilder<SignupBloc, SignupState>(
-            builder: (context, state) => Btn(
-              label: "Cadastrar",
-              onPressed: state is! SignupLoading ? _signup : null,
+    return BlocListener<SignupBloc, SignupState>(
+      listener: _listenerState,
+      child: Form(
+        child: Column(
+          children: [
+            Input(
+              hintText: "Nome",
+              controller: _nameController,
             ),
-          ),
-        ],
+            Input(
+              hintText: "E-mail",
+              controller: _emailController,
+            ),
+            Input(
+              hintText: "Senha",
+              controller: _passwordController,
+              obscureText: true,
+            ),
+            Input(
+              hintText: "Confirmar senha",
+              controller: _password2Controller,
+              obscureText: true,
+            ),
+            BlocBuilder<SignupBloc, SignupState>(builder: _signUpBtn),
+          ],
+        ),
       ),
     );
   }
 
-  _signup() {
+  Widget _signUpBtn(BuildContext context, SignupState state) {
+    return Btn(
+      label: "Cadastrar",
+      onPressed: state is! SignupLoading ? _signUp : null,
+    );
+  }
+
+  void _listenerState(BuildContext context, SignupState state) {
+    if (state is SignupError) {
+      Toogle.show(context: context, label: state.message);
+    }
+  }
+
+  void _signUp() {
     BlocProvider.of<SignupBloc>(context).add(
-      Signup(
+      CreateAccount(
         name: _nameController.text,
         email: _emailController.text,
         password: _passwordController.text,
