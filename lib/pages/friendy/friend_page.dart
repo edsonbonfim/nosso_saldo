@@ -16,7 +16,7 @@ import '../../shared/modal.dart';
 import '../../shared/placeholder_container.dart';
 
 class FriendPage extends StatefulWidget {
-  final Friend friend;
+  final Contact friend;
 
   const FriendPage({
     Key key,
@@ -30,7 +30,7 @@ class FriendPage extends StatefulWidget {
 class _FriendPageState extends State<FriendPage>
     with SingleTickerProviderStateMixin {
   AuthenticationBloc authentication;
-  ListTransactionBloc transaction;
+  TransactionsBloc transaction;
 
   TextEditingController cost;
   TextEditingController message;
@@ -43,9 +43,9 @@ class _FriendPageState extends State<FriendPage>
 
     authentication = BlocProvider.of<AuthenticationBloc>(context);
 
-    transaction = ListTransactionBloc(
+    transaction = TransactionsBloc(
       authentication: authentication,
-      friend: widget.friend,
+      contact: widget.friend,
     );
 
     cost = TextEditingController();
@@ -82,7 +82,7 @@ class _FriendPageState extends State<FriendPage>
         animationController: rubberAnimation,
         lowerLayer: RefreshIndicator(
           onRefresh: transaction.onRefresh,
-          child: BlocBuilder<ListTransactionBloc, ListTransactionState>(
+          child: BlocBuilder<TransactionsBloc, TransactionsState>(
             bloc: transaction,
             builder: _success,
           ),
@@ -101,19 +101,19 @@ class _FriendPageState extends State<FriendPage>
     );
   }
 
-  Widget _success(BuildContext context, ListTransactionState state) {
+  Widget _success(BuildContext context, TransactionsState state) {
     return SingleChildScrollView(
       physics: AlwaysScrollableScrollPhysics(),
       child: Column(
         children: [
-          FriendTile(friend: widget.friend),
+          ContactTile(widget.friend),
           CustomCard(
-            title: "Histórico",
+            label: "Histórico",
             child: <Widget>(context) {
-              if (state is ListTransactionSuccess) {
+              if (state is LoaddedTransactions) {
                 return _list(context, state.transactions);
               }
-              if (state is ListTransactionEmpty) {
+              if (state is EmptyTransactions) {
                 return _empty(context);
               }
               return _placeholderList(context);

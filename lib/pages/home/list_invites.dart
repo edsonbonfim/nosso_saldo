@@ -39,9 +39,9 @@ class ListInvites extends StatelessWidget {
     return SizedBox();
   }
 
-  Widget _listInvites(BuildContext context, List<Friend> friends) {
+  Widget _listInvites(BuildContext context, List<Contact> friends) {
     return CustomCard(
-      title: "Convites",
+      label: "Convites",
       child: ListView.separated(
         shrinkWrap: true,
         physics: ScrollPhysics(),
@@ -55,7 +55,7 @@ class ListInvites extends StatelessWidget {
     );
   }
 
-  Widget _invite(BuildContext context, Friend friend) {
+  Widget _invite(BuildContext context, Contact friend) {
     return Column(
       children: [
         ListTile(
@@ -85,7 +85,7 @@ class ListInvites extends StatelessWidget {
     );
   }
 
-  _actions(BuildContext context, {@required Friend friend}) {
+  _actions(BuildContext context, {@required Contact friend}) {
     AnswerInviteBloc answerInvite = BlocProvider.of<AnswerInviteBloc>(context);
 
     return Row(

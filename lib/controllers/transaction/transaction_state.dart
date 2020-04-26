@@ -1,21 +1,17 @@
-import 'package:meta/meta.dart';
-
 import '../../models/transaction.dart';
 
-class ListTransactionState {}
+class TransactionsState {}
 
-class ListTransactionLoading extends ListTransactionState {}
+class LoadingTransactions extends TransactionsState {}
 
-class ListTransactionEmpty extends ListTransactionState {}
+class EmptyTransactions extends TransactionsState {}
 
-class ListTransactionError extends ListTransactionState {
+class ErrorTransactions extends TransactionsState {
+  ErrorTransactions(this.message);
   final String message;
-
-  ListTransactionError({@required this.message});
 }
 
-class ListTransactionSuccess extends ListTransactionState {
+class LoaddedTransactions extends TransactionsState {
+  LoaddedTransactions(this.transactions);
   final List<Transaction> transactions;
-
-  ListTransactionSuccess({@required this.transactions});
 }

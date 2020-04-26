@@ -42,6 +42,10 @@ class App extends StatelessWidget {
               secondary: const Color(0xff232C51),
               onSecondary: const Color(0xff2EB9E9),
             ),
+        appBarTheme: AppBarTheme(
+          elevation: 2,
+          color: const Color(0xff232C51),
+        ),
         fontFamily: "Montserrat",
       ),
       debugShowCheckedModeBanner: false,

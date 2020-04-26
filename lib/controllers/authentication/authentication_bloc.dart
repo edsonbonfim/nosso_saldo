@@ -3,15 +3,18 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
+import '../../models/user.dart';
 import '../../services/user_repository.dart';
 import 'authentication_event.dart';
 import 'authentication_state.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
+  AuthenticationBloc({@required this.repository}) : assert(repository != null);
+
   final UserRepository repository;
 
-  AuthenticationBloc({@required this.repository}) : assert(repository != null);
+  User user;
 
   @override
   AuthenticationState get initialState => AuthenticationUninitialized();

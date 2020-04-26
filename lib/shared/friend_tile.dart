@@ -1,32 +1,33 @@
+import 'package:build_context/build_context.dart';
 import 'package:flutter/material.dart';
 
 import '../models/friend.dart';
 import 'placeholder_container.dart';
 
-class FriendTile extends StatelessWidget {
-  final Friend friend;
-  final VoidCallback onTap;
-  final EdgeInsets contentPadding;
-
-  const FriendTile({
+class ContactTile extends StatelessWidget {
+  const ContactTile(
+    this.contact, {
     Key key,
-    @required this.friend,
     this.onTap,
-    this.contentPadding,
+    this.showImage = true,
   }) : super(key: key);
+
+  final Contact contact;
+  final VoidCallback onTap;
+  final bool showImage;
 
   @override
   Widget build(BuildContext context) {
     String message;
     String myBalance = r"R$ " +
-        (friend.myBalance < 0 ? friend.myBalance * -1 : friend.myBalance)
+        (contact.myBalance < 0 ? contact.myBalance * -1 : contact.myBalance)
             .toStringAsFixed(2);
     Color color = const Color(0xffC3DEED);
 
-    if (friend.myBalance < 0) {
+    if (contact.myBalance < 0) {
       message = "Você deve $myBalance";
       color = Theme.of(context).colorScheme.primary;
-    } else if (friend.myBalance > 0) {
+    } else if (contact.myBalance > 0) {
       message = "Seu crédito é de $myBalance";
       color = const Color(0xff8EF6B1);
     } else {
@@ -35,35 +36,28 @@ class FriendTile extends StatelessWidget {
     }
 
     return ListTile(
-      contentPadding: contentPadding,
       onTap: onTap,
-      leading: Hero(
-        tag: friend.id,
-        child: CircleAvatar(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          backgroundImage: AssetImage("assets/images/placeholder-avatar.jpg"),
-        ),
-      ),
+      leading: !showImage
+          ? null
+          : CircleAvatar(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              backgroundImage:
+                  AssetImage("assets/images/placeholder-avatar.jpg"),
+            ),
       title: Text(
-        friend.name,
+        contact.name,
         style: TextStyle(
-          fontWeight: FontWeight.w400,
+          fontSize: 14,
           color: const Color(0xffC3DEED),
         ),
       ),
       subtitle: Text(
         message,
         style: TextStyle(
+          fontSize: 13,
           color: color,
-          fontWeight: FontWeight.w500,
         ),
       ),
-      trailing: onTap == null
-          ? null
-          : Icon(
-              Icons.arrow_forward_ios,
-              color: const Color(0xffC3DEED),
-            ),
     );
   }
 
@@ -71,29 +65,27 @@ class FriendTile extends StatelessWidget {
     BuildContext context, {
     @required int itemCount,
   }) {
-    return ListView.separated(
+    return ListView.builder(
       shrinkWrap: true,
       physics: ScrollPhysics(),
       itemBuilder: (context, _) => placeholder(context),
-      separatorBuilder: (_, __) => Divider(height: 1),
       itemCount: itemCount,
     );
   }
 
   static Widget placeholder(BuildContext context) {
     return ListTile(
-      contentPadding: EdgeInsets.zero,
       leading: CircleAvatar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         backgroundImage: AssetImage("assets/images/placeholder-avatar.jpg"),
       ),
-      title: Row(children: [
+      title: Wrap(children: [
         PlaceholderContainer(
           width: 80,
           height: 12,
         ),
       ]),
-      subtitle: Row(children: [
+      subtitle: Wrap(children: [
         PlaceholderContainer(
           width: 200,
           height: 10,

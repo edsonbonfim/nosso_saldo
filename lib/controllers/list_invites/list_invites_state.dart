@@ -17,7 +17,7 @@ class ListInvitesError extends ListInvitesState {
 }
 
 class ListInvitesSuccess extends ListInvitesState {
-  final List<Friend> friends;
+  final List<Contact> friends;
 
   ListInvitesSuccess({@required this.friends});
 }

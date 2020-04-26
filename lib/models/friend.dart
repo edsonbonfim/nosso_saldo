@@ -1,21 +1,21 @@
 import 'package:meta/meta.dart';
 
-class Friend {
+class Contact {
   final String id;
   final String name;
 
   String email;
   double myBalance;
 
-  Friend({
+  Contact({
     @required this.id,
     @required this.name,
     this.email,
     this.myBalance,
   });
 
-  factory Friend.fromJson(Map<String, dynamic> json) {
-    return Friend(
+  factory Contact.fromJson(Map<String, dynamic> json) {
+    return Contact(
       id: json["_id"],
       name: json["friendName"] ?? json["name"] ?? null,
       myBalance: json["myBalance"] == null

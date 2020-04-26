@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rubber/rubber.dart';
 
 import '../../controllers/authentication/authentication_bloc.dart';
-import '../../controllers/authentication/authentication_event.dart';
 import '../../controllers/invite_friend/invite_friend_bloc.dart';
 import '../../controllers/invite_friend/invite_friend_state.dart';
 import '../../shared/btn.dart';
@@ -54,19 +53,6 @@ class _MainPageState extends State<MainPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        backgroundColor: Colors.transparent,
-        title: Text("Nosso Saldo"),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: () {
-              BlocProvider.of<AuthenticationBloc>(context).add(LoggedOut());
-            },
-          ),
-        ],
-      ),
       body: BlocProvider.value(
         value: addFriendBloc,
         child: BlocListener<InviteFriendBloc, InviteFriendState>(

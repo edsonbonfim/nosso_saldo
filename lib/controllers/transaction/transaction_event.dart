@@ -1,3 +1,3 @@
-class TransactionEvent {}
+class TransactionsEvent {}
 
-class FetchTransactions extends TransactionEvent {}
+class FetchTransactions extends TransactionsEvent {}

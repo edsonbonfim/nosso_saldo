@@ -18,6 +18,8 @@ dependencies:
   intl: ^0.16.1
   rubber: ^0.4.0
   liquid_pull_to_refresh: ^1.1.2
+  build_context:
+    path: ../build_context
 
 flutter:
   uses-material-design: true

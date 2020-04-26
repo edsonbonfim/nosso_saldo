@@ -6,40 +6,40 @@ import '../authentication/authentication_bloc.dart';
 import 'transaction_event.dart';
 import 'transaction_state.dart';
 
-class ListTransactionBloc extends Bloc<TransactionEvent, ListTransactionState> {
+class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
   final AuthenticationBloc authentication;
-  final Friend friend;
+  final Contact contact;
 
-  ListTransactionBloc({
+  TransactionsBloc({
     @required this.authentication,
-    @required this.friend,
+    @required this.contact,
   }) {
     fetchTransactions();
   }
 
   @override
-  ListTransactionState get initialState => ListTransactionLoading();
+  TransactionsState get initialState => LoadingTransactions();
 
   @override
-  Stream<ListTransactionState> mapEventToState(TransactionEvent event) async* {
+  Stream<TransactionsState> mapEventToState(TransactionsEvent event) async* {
     if (event is FetchTransactions) {
-      yield ListTransactionLoading();
+      yield LoadingTransactions();
       try {
         var transactions = await authentication.repository.getTransactions(
           authentication.repository.token,
-          friend.id,
+          contact.id,
         );
 
         if (transactions.isEmpty) {
-          yield ListTransactionEmpty();
+          yield EmptyTransactions();
           return;
         }
 
-        yield ListTransactionSuccess(transactions: transactions);
+        yield LoaddedTransactions(transactions);
       } on FormatException catch (ex) {
-        yield ListTransactionError(message: ex.message);
+        yield ErrorTransactions(ex.message);
       } on Exception {
-        yield ListTransactionError(message: "Ocorreu um erro, tente novamente");
+        yield ErrorTransactions("Ocorreu um erro, tente novamente");
       }
     }
   }

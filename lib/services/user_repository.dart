@@ -5,7 +5,6 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
-import '../controllers/list_friends/list_friends_state.dart';
 import '../controllers/list_invites/list_invites_bloc.dart';
 import '../models/friend.dart';
 import '../models/transaction.dart';
@@ -110,20 +109,20 @@ class UserRepository {
     return data["message"];
   }
 
-  Future<List<Friend>> getInvites() async {
+  Future<List<Contact>> getInvites() async {
     var response = await http.get('$url/friendRequest/get', headers: {
       HttpHeaders.authorizationHeader: token,
     });
 
     if (response.contentLength == 0) {
-      return <Friend>[];
+      return <Contact>[];
     }
 
     var data = jsonDecode(response.body) as Map;
 
     var rawFriends = data["payload"] as List;
 
-    return rawFriends.map((friend) => Friend.fromJson(friend)).toList();
+    return rawFriends.map((friend) => Contact.fromJson(friend)).toList();
   }
 
   Future<String> answerInvite({
@@ -152,7 +151,7 @@ class UserRepository {
     return data["message"];
   }
 
-  Future<ListFriendsState> getFriends() async {
+  Future<List<Contact>> getContacts() async {
     var response = await http.get("$url/balance", headers: {
       HttpHeaders.authorizationHeader: token,
     });
@@ -160,18 +159,16 @@ class UserRepository {
     var data = jsonDecode(response.body);
 
     if (data["err"] != null) {
-      return ListFriendsError(message: data["err"]);
+      throw FormatException(data["err"]);
     }
 
     if (data["empty"] != null) {
-      return ListFriendsEmpty();
+      return <Contact>[];
     }
 
     var rawFriends = data["formattedData"] as List;
 
-    return ListFriendsSuccess(
-      friends: rawFriends.map((friend) => Friend.fromJson(friend)).toList(),
-    );
+    return rawFriends.map((friend) => Contact.fromJson(friend)).toList();
   }
 
   Future<List<Transaction>> getTransactions(
