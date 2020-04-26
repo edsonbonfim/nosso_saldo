@@ -15,7 +15,6 @@ class Btn extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: 40,
-      margin: EdgeInsets.symmetric(vertical: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
         gradient: LinearGradient(

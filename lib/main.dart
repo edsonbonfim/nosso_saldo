@@ -23,7 +23,7 @@ class SimpleBlocDelegate extends BlocDelegate {
 
   @override
   void onTransition(Bloc bloc, Transition transition) {
-    print(transition);
+    // print(transition);
     super.onTransition(bloc, transition);
   }
 
@@ -36,7 +36,7 @@ class SimpleBlocDelegate extends BlocDelegate {
 
 Future<Box> openBox() async {
   if (kIsWeb) {
-    return Hive.openBox("settings");
+    return Hive.openBox<String>("settings");
   }
 
   String path;
@@ -50,7 +50,7 @@ Future<Box> openBox() async {
   }
 
   Hive.init(path);
-  return Hive.openBox("settings");
+  return Hive.openBox<String>("settings");
 }
 
 void main() async {
@@ -70,7 +70,7 @@ void main() async {
   runApp(
     BlocProvider<AuthenticationBloc>(
       create: (context) {
-        return AuthenticationBloc(userRepository: userRepository)
+        return AuthenticationBloc(repository: userRepository)
           ..add(AppStarted());
       },
       child: App(),

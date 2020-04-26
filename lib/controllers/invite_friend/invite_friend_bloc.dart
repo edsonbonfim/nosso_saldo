@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
 import '../authentication/authentication_bloc.dart';
@@ -20,17 +19,19 @@ class InviteFriendBloc extends Bloc<InviteFriendEvent, InviteFriendState> {
 
     if (event is InviteFriend) {
       try {
-        var message = await authenticationBloc.userRepository.inviteFriend(
+        var message = await authenticationBloc.repository.inviteFriend(
           emailToInvite: event.emailToInvite,
         );
         yield InviteFriendSuccess(message: message);
       } on FormatException catch (ex) {
         yield InviteFriendError(message: ex.message);
-      } on DioError catch (ex) {
-        yield InviteFriendError(message: ex.message);
       } on Exception {
         yield InviteFriendError(message: "Ocorreu um erro, tente novamente!");
       }
     }
+  }
+
+  void sendInvite({@required emailToInvite}) {
+    add(InviteFriend(emailToInvite: emailToInvite));
   }
 }

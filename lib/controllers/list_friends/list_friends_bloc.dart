@@ -1,11 +1,14 @@
 import 'package:bloc/bloc.dart';
+import 'package:meta/meta.dart';
 
-import '../../services/API.dart';
+import '../authentication/authentication_bloc.dart';
 import 'list_friends_event.dart';
 import 'list_friends_state.dart';
 
 class ListFriendsBloc extends Bloc<ListFriendsEvent, ListFriendsState> {
-  final _apiService = APIService();
+  final AuthenticationBloc authenticationBloc;
+
+  ListFriendsBloc({@required this.authenticationBloc});
 
   @override
   ListFriendsState get initialState => ListFriendsLoading();
@@ -14,8 +17,8 @@ class ListFriendsBloc extends Bloc<ListFriendsEvent, ListFriendsState> {
   Stream<ListFriendsState> mapEventToState(ListFriendsEvent event) async* {
     yield ListFriendsLoading();
 
-    if (event is ListFriendsFetch) {
-      yield await _apiService.getFriends(event.token);
+    if (event is FetchFriends) {
+      yield await authenticationBloc.repository.getFriends();
     }
   }
 }

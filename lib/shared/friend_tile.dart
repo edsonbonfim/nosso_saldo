@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:nosso_saldo/models/friend.dart';
+
+import '../models/friend.dart';
+import 'placeholder_container.dart';
 
 class FriendTile extends StatelessWidget {
   final Friend friend;
   final VoidCallback onTap;
   final EdgeInsets contentPadding;
 
-  const FriendTile(
-      {Key key, @required this.friend, this.onTap, this.contentPadding})
-      : super(key: key);
+  const FriendTile({
+    Key key,
+    @required this.friend,
+    this.onTap,
+    this.contentPadding,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +30,8 @@ class FriendTile extends StatelessWidget {
       message = "Seu crédito é de $myBalance";
       color = const Color(0xff8EF6B1);
     } else {
-      message = "Nínguem deve ningém";
-      color = Colors.white;
+      message = "Ninguém deve ninguém";
+      color = const Color(0xffC3DEED);
     }
 
     return ListTile(
@@ -59,6 +64,41 @@ class FriendTile extends StatelessWidget {
               Icons.arrow_forward_ios,
               color: const Color(0xffC3DEED),
             ),
+    );
+  }
+
+  static Widget placeholderList(
+    BuildContext context, {
+    @required int itemCount,
+  }) {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: ScrollPhysics(),
+      itemBuilder: (context, _) => placeholder(context),
+      separatorBuilder: (_, __) => Divider(height: 1),
+      itemCount: itemCount,
+    );
+  }
+
+  static Widget placeholder(BuildContext context) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: CircleAvatar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundImage: AssetImage("assets/images/placeholder-avatar.jpg"),
+      ),
+      title: Row(children: [
+        PlaceholderContainer(
+          width: 80,
+          height: 12,
+        ),
+      ]),
+      subtitle: Row(children: [
+        PlaceholderContainer(
+          width: 200,
+          height: 10,
+        ),
+      ]),
     );
   }
 }

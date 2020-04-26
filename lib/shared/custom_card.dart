@@ -13,7 +13,7 @@ class CustomCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.fromLTRB(12, 20, 12, 90),
+      margin: const EdgeInsets.fromLTRB(12, 0, 12, 20),
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),

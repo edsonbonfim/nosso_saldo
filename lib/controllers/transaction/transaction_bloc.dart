@@ -1,28 +1,50 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:nosso_saldo/controllers/authentication/authentication_bloc.dart';
-import 'package:nosso_saldo/controllers/transaction/transaction_event.dart';
-import 'package:nosso_saldo/controllers/transaction/transaction_state.dart';
-import 'package:nosso_saldo/services/API.dart';
 
-class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
-  final AuthenticationBloc authenticationBloc;
-  final _apiService = APIService();
+import '../../models/friend.dart';
+import '../authentication/authentication_bloc.dart';
+import 'transaction_event.dart';
+import 'transaction_state.dart';
 
-  TransactionBloc({@required this.authenticationBloc});
+class ListTransactionBloc extends Bloc<TransactionEvent, ListTransactionState> {
+  final AuthenticationBloc authentication;
+  final Friend friend;
+
+  ListTransactionBloc({
+    @required this.authentication,
+    @required this.friend,
+  }) {
+    fetchTransactions();
+  }
 
   @override
-  TransactionState get initialState => TransactionLoading();
+  ListTransactionState get initialState => ListTransactionLoading();
 
   @override
-  Stream<TransactionState> mapEventToState(TransactionEvent event) async* {
-    yield TransactionLoading();
+  Stream<ListTransactionState> mapEventToState(TransactionEvent event) async* {
+    if (event is FetchTransactions) {
+      yield ListTransactionLoading();
+      try {
+        var transactions = await authentication.repository.getTransactions(
+          authentication.repository.token,
+          friend.id,
+        );
 
-    if (event is TransactionFetch) {
-      yield await _apiService.getTransactions(
-        authenticationBloc.userRepository.token,
-        event.friendId,
-      );
+        if (transactions.isEmpty) {
+          yield ListTransactionEmpty();
+          return;
+        }
+
+        yield ListTransactionSuccess(transactions: transactions);
+      } on FormatException catch (ex) {
+        yield ListTransactionError(message: ex.message);
+      } on Exception {
+        yield ListTransactionError(message: "Ocorreu um erro, tente novamente");
+      }
     }
   }
+
+  void fetchTransactions() => add(FetchTransactions());
+
+  Future<void> onRefresh() async => fetchTransactions();
 }

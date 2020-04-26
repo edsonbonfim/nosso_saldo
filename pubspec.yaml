@@ -8,7 +8,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  dio: ^3.0.9
   meta: ^1.1.8
   bloc: ^4.0.0
   flutter_bloc: ^4.0.0
@@ -17,8 +16,8 @@ dependencies:
   hive_flutter: ^0.3.0+2
   path_provider: ^1.6.7
   intl: ^0.16.1
-  flutter_placeholder_textlines: ^1.0.4
   rubber: ^0.4.0
+  liquid_pull_to_refresh: ^1.1.2
 
 flutter:
   uses-material-design: true

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nosso_saldo/pages/signup/signup_page.dart';
 
 import 'controllers/authentication/authentication_bloc.dart';
 import 'controllers/authentication/authentication_state.dart';
 import 'pages/login/login_indicator.dart';
 import 'pages/login/login_page.dart';
 import 'pages/main/main_page.dart';
+import 'pages/signup/signup_page.dart';
 import 'pages/splash/splash_page.dart';
 
 class App extends StatelessWidget {

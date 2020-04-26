@@ -23,7 +23,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield LoginLoading();
 
       try {
-        var token = await authenticationBloc.userRepository.authenticate(
+        var token = await authenticationBloc.repository.authenticate(
           username: event.email,
           password: event.password,
         );

@@ -5,8 +5,10 @@ import 'package:rubber/rubber.dart';
 import '../../controllers/authentication/authentication_bloc.dart';
 import '../../controllers/authentication/authentication_event.dart';
 import '../../controllers/invite_friend/invite_friend_bloc.dart';
-import '../../controllers/invite_friend/invite_friend_event.dart';
 import '../../controllers/invite_friend/invite_friend_state.dart';
+import '../../shared/btn.dart';
+import '../../shared/input.dart';
+import '../../shared/modal.dart';
 import '../../shared/toogle.dart';
 import '../home/home_page.dart';
 
@@ -39,15 +41,15 @@ class _MainPageState extends State<MainPage>
     );
   }
 
-  // @override
-  // void dispose() {
-  // try {
-  //   addFriendBloc.close();
-  //   emailController.dispose();
-  //   bottomSheetController?.dispose();
-  // } catch (ex) {}
-  // super.dispose();
-  // }
+  @override
+  void dispose() {
+    try {
+      addFriendBloc.close();
+      emailController.dispose();
+      bottomSheetController?.dispose();
+    } catch (ex) {}
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,55 +87,7 @@ class _MainPageState extends State<MainPage>
             builder: (context, state) => RubberBottomSheet(
               animationController: bottomSheetController,
               lowerLayer: HomePage(),
-              upperLayer: Container(
-                width: double.infinity,
-                padding: EdgeInsets.fromLTRB(25, 10, 25, 0),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(kBottomNavigationBarHeight / 2),
-                    topRight: Radius.circular(kBottomNavigationBarHeight / 2),
-                  ),
-                ),
-                child: ListView(
-                  physics: ScrollPhysics(),
-                  children: [
-                    Center(
-                      child: Container(
-                        width: 50,
-                        height: 3,
-                        decoration: BoxDecoration(
-                          color: const Color(0xff536180),
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Text(
-                      "Usuários",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0xffC3DEED),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      "Convidar usuário pelo e-mail",
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w300,
-                        color: const Color(0xffC3DEED),
-                      ),
-                    ),
-                    _input(
-                      hintText: "E-mail do usuário",
-                      controller: emailController,
-                    ),
-                    _btn(text: "Convidar", state: state),
-                  ],
-                ),
-              ),
+              upperLayer: _modal(),
             ),
           ),
         ),
@@ -150,76 +104,23 @@ class _MainPageState extends State<MainPage>
     );
   }
 
-  _input({
-    @required String hintText,
-    @required TextEditingController controller,
-    bool obscureText = false,
-  }) {
-    var style = TextStyle(fontSize: 12, fontWeight: FontWeight.w300);
-
-    return Container(
-      margin: EdgeInsets.only(top: 20, bottom: 15),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        boxShadow: [BoxShadow(color: const Color(0xff19203F))],
-      ),
-      child: TextFormField(
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 12),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.transparent),
-          ),
-          hintText: hintText,
-          hintStyle: style,
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.onSecondary,
-            ),
-          ),
+  Widget _modal() {
+    return Modal(
+      controller: bottomSheetController,
+      label: "Usuários",
+      sublabel: "Convidar usuário pelo e-mail",
+      inputs: [
+        Input(
+          hintText: "E-mail",
+          controller: emailController,
+          reverseColor: true,
         ),
-        controller: controller,
-        obscureText: obscureText,
-        style: style,
-      ),
-    );
-  }
-
-  _btn({
-    @required String text,
-    @required InviteFriendState state,
-  }) {
-    return Container(
-      width: double.infinity,
-      height: 40,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        gradient: LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: [
-            Theme.of(context).colorScheme.primary.withAlpha(230),
-            Theme.of(context).colorScheme.primary,
-            Theme.of(context).colorScheme.primary.withAlpha(230),
-          ],
+      ],
+      btn: Btn(
+        label: "Convidar",
+        onPressed: () => addFriendBloc.sendInvite(
+          emailToInvite: emailController.text,
         ),
-        boxShadow: [BoxShadow(color: const Color(0xff19203F))],
-      ),
-      child: FlatButton(
-        onPressed: () {
-          addFriendBloc.add(InviteFriend(
-            emailToInvite: emailController.text,
-          ));
-        },
-        textColor: Colors.white,
-        disabledTextColor: Colors.white,
-        child: state is! InviteFriendLoading
-            ? Text(text)
-            : SizedBox(
-                width: 15,
-                height: 15,
-                child: CircularProgressIndicator(),
-              ),
       ),
     );
   }

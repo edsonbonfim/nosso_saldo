@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
-import 'package:nosso_saldo/models/friend.dart';
+
+import '../../models/friend.dart';
 
 class ListFriendsState {}
 

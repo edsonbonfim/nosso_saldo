@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
 import '../authentication/authentication_bloc.dart';
@@ -62,13 +61,13 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
 
       try {
         // TODO: Retornar o token quando realizar o cadastro
-        await authenticationBloc.userRepository.signup(
+        await authenticationBloc.repository.signup(
           name: name,
           email: email,
           password: pass,
         );
 
-        var token = await authenticationBloc.userRepository.authenticate(
+        var token = await authenticationBloc.repository.authenticate(
           username: email,
           password: pass,
         );
@@ -77,12 +76,6 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
         authenticationBloc.add(LoggedIn(token: token));
       } on FormatException catch (ex) {
         yield SignupError(message: ex.message);
-      } on DioError catch (ex) {
-        if (ex.response != null) {
-          yield SignupError(message: ex.response.data["err"] ?? ex.message);
-        } else {
-          yield SignupError(message: ex.message);
-        }
       } on Exception {
         yield SignupError(message: "Ocorreu um erro, tente novamente");
       }
