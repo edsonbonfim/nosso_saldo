@@ -10,8 +10,4 @@ class FetchToken extends LoginEvent {
     @required this.email,
     @required this.password,
   });
-
-  @override
-  String toString() =>
-      'LoginButtonPressed { username: $email, password: $password }';
 }

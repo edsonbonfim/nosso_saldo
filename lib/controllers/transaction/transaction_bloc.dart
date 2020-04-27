@@ -1,50 +1,32 @@
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
 
-import '../../models/friend.dart';
-import '../authentication/authentication_bloc.dart';
+import '../../models/transaction.dart';
+import '../authentication/authentication.dart';
+import '../transactions/transactions.dart';
 import 'transaction_event.dart';
 import 'transaction_state.dart';
 
-class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
-  final AuthenticationBloc authentication;
-  final Contact contact;
+class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
+  TransactionBloc(this.transactionsBloc);
 
-  TransactionsBloc({
-    @required this.authentication,
-    @required this.contact,
-  }) {
-    fetchTransactions();
-  }
+  final TransactionsBloc transactionsBloc;
+
+  AuthenticationBloc get authenticationBloc =>
+      transactionsBloc.authenticationBloc;
 
   @override
-  TransactionsState get initialState => LoadingTransactions();
+  TransactionState get initialState => InitialTransaction();
 
   @override
-  Stream<TransactionsState> mapEventToState(TransactionsEvent event) async* {
-    if (event is FetchTransactions) {
-      yield LoadingTransactions();
-      try {
-        var transactions = await authentication.repository.getTransactions(
-          authentication.repository.token,
-          contact.id,
-        );
-
-        if (transactions.isEmpty) {
-          yield EmptyTransactions();
-          return;
-        }
-
-        yield LoaddedTransactions(transactions);
-      } on FormatException catch (ex) {
-        yield ErrorTransactions(ex.message);
-      } on Exception {
-        yield ErrorTransactions("Ocorreu um erro, tente novamente");
-      }
+  Stream<TransactionState> mapEventToState(TransactionEvent event) async* {
+    if (event is SendTransaction) {
+      yield SendingTransaction();
+      yield SendedTransaction("Cadastrado");
     }
   }
 
-  void fetchTransactions() => add(FetchTransactions());
-
-  Future<void> onRefresh() async => fetchTransactions();
+  sendTransaction(Transaction transaction) {
+    add(SendTransaction(transaction));
+    transactionsBloc.add(AddTransaction(transaction));
+  }
 }

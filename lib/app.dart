@@ -1,25 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'controllers/authentication/authentication_bloc.dart';
-import 'controllers/authentication/authentication_state.dart';
-import 'pages/login/login_indicator.dart';
-import 'pages/login/login_page.dart';
-import 'pages/main/main_page.dart';
-import 'pages/signup/signup_page.dart';
-import 'pages/splash/splash_page.dart';
+import 'controllers/controllers.dart';
+import 'widgets.dart';
 
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: "Nosso Saldo",
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
           if (state is AuthenticationUninitialized) {
             return SplashPage();
           }
           if (state is AuthenticationAuthenticated) {
-            return MainPage();
+            return HomePage();
           }
           if (state is AuthenticationLogin) {
             return LoginPage();

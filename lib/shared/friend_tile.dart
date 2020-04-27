@@ -1,4 +1,3 @@
-import 'package:build_context/build_context.dart';
 import 'package:flutter/material.dart';
 
 import '../models/friend.dart';

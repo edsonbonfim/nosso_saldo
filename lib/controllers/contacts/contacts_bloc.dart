@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 
 import '../../models/friend.dart';
-import '../authentication/authentication_bloc.dart';
+import '../authentication/authentication.dart';
 import 'contacts_event.dart';
 import 'contacts_state.dart';
 
@@ -15,24 +15,24 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
   List<Contact> contacts;
 
   @override
-  ContactsState get initialState => ContactsLoading();
+  ContactsState get initialState => LoadingContacts();
 
   @override
   Stream<ContactsState> mapEventToState(ContactsEvent event) async* {
     if (event is FetchContacts) {
-      yield ContactsLoading();
+      yield LoadingContacts();
 
       try {
         contacts = await authenticationBloc.repository.getContacts();
 
         if (contacts.isEmpty) {
-          yield ContactsEmpty();
+          yield EmptyContacts();
           return;
         }
 
-        yield ContactsSuccess(contacts: contacts);
+        yield LoadedContacts(contacts);
       } on FormatException catch (ex) {
-        ContactsError(message: ex.message);
+        UnloadedContacts(ex.message);
       }
     }
   }

@@ -3,10 +3,9 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
-import '../../models/user.dart';
-import '../../services/user_repository.dart';
-import 'authentication_event.dart';
-import 'authentication_state.dart';
+import '../../models/models.dart';
+import '../../repositories/repository.dart';
+import '../controllers.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
@@ -14,7 +13,7 @@ class AuthenticationBloc
 
   final UserRepository repository;
 
-  User user;
+  User get user => repository.user;
 
   @override
   AuthenticationState get initialState => AuthenticationUninitialized();
@@ -24,9 +23,7 @@ class AuthenticationBloc
     AuthenticationEvent event,
   ) async* {
     if (event is AppStarted) {
-      final bool hasToken = repository.hasToken();
-
-      if (hasToken) {
+      if (repository.user != null) {
         yield AuthenticationAuthenticated();
       } else {
         yield AuthenticationLogin();
@@ -43,13 +40,13 @@ class AuthenticationBloc
 
     if (event is LoggedIn) {
       yield AuthenticationLoading();
-      await repository.persistToken(event.token);
+      await repository.persistUser(event.user);
       yield AuthenticationAuthenticated();
     }
 
     if (event is LoggedOut) {
       yield AuthenticationLoading();
-      await repository.deleteToken();
+      await event.user.delete();
       yield AuthenticationLogin();
     }
   }

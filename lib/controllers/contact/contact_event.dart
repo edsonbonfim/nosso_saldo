@@ -1,4 +1,4 @@
-import 'package:nosso_saldo/models/friend.dart';
+import '../../models/friend.dart';
 
 abstract class ContactEvent {}
 

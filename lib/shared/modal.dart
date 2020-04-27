@@ -10,6 +10,7 @@ class Modal extends StatelessWidget {
   final String sublabel;
   final List<Input> inputs;
   final Btn btn;
+  final bool reverseColor;
 
   const Modal({
     Key key,
@@ -18,6 +19,7 @@ class Modal extends StatelessWidget {
     this.sublabel,
     @required this.inputs,
     @required this.btn,
+    this.reverseColor = false,
   })  : assert(controller != null),
         assert(label != null),
         assert(inputs != null && inputs.length > 0),
@@ -30,7 +32,9 @@ class Modal extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(25, 0, 25, 0),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondary,
+        color: !reverseColor
+            ? Theme.of(context).scaffoldBackgroundColor
+            : Theme.of(context).colorScheme.secondary,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(kBottomNavigationBarHeight / 2),
           topRight: Radius.circular(kBottomNavigationBarHeight / 2),

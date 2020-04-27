@@ -74,7 +74,7 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _signUpBtn(BuildContext context, LoginState state) {
-    if (state is LoginLoading) {
+    if (state is LoggingIn) {
       return FlatButton(child: null, onPressed: null);
     }
 

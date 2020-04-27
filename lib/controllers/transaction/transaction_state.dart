@@ -1,17 +1,19 @@
-import '../../models/transaction.dart';
+abstract class TransactionState {}
 
-class TransactionsState {}
+abstract class TransactionStateMessage extends TransactionState {
+  String get message;
+}
 
-class LoadingTransactions extends TransactionsState {}
+class InitialTransaction extends TransactionState {}
 
-class EmptyTransactions extends TransactionsState {}
+class SendingTransaction extends TransactionState {}
 
-class ErrorTransactions extends TransactionsState {
-  ErrorTransactions(this.message);
+class UnsendedTransaction extends TransactionStateMessage {
+  UnsendedTransaction(this.message);
   final String message;
 }
 
-class LoaddedTransactions extends TransactionsState {
-  LoaddedTransactions(this.transactions);
-  final List<Transaction> transactions;
+class SendedTransaction extends TransactionStateMessage {
+  SendedTransaction(this.message);
+  final String message;
 }

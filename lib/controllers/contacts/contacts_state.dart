@@ -1,21 +1,17 @@
-import 'package:meta/meta.dart';
-
 import '../../models/friend.dart';
 
-class ContactsState {}
+abstract class ContactsState {}
 
-class ContactsLoading extends ContactsState {}
+class LoadingContacts extends ContactsState {}
 
-class ContactsEmpty extends ContactsState {}
+class EmptyContacts extends ContactsState {}
 
-class ContactsError extends ContactsState {
+class UnloadedContacts extends ContactsState {
+  UnloadedContacts(this.message);
   final String message;
-
-  ContactsError({@required this.message});
 }
 
-class ContactsSuccess extends ContactsState {
+class LoadedContacts extends ContactsState {
+  LoadedContacts(this.contacts);
   final List<Contact> contacts;
-
-  ContactsSuccess({@required this.contacts});
 }

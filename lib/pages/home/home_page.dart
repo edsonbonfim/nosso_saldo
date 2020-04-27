@@ -14,17 +14,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  AuthenticationBloc authenticationBloc;
-
   ContactBloc contactBloc;
   ContactsBloc contactsBloc;
 
   @override
   void initState() {
     super.initState();
-    authenticationBloc = context.bloc<AuthenticationBloc>();
     contactBloc = ContactBloc();
-    contactsBloc = ContactsBloc(authenticationBloc);
+    contactsBloc = ContactsBloc(context.bloc<AuthenticationBloc>());
   }
 
   @override

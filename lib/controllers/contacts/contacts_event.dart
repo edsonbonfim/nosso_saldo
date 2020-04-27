@@ -1,3 +1,3 @@
-class ContactsEvent {}
+abstract class ContactsEvent {}
 
 class FetchContacts extends ContactsEvent {}

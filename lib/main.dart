@@ -10,9 +10,9 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'app.dart';
-import 'controllers/authentication/authentication_bloc.dart';
-import 'controllers/authentication/authentication_event.dart';
-import 'services/user_repository.dart';
+import 'controllers/controllers.dart';
+import 'models/models.dart';
+import 'repositories/repository.dart';
 
 class SimpleBlocDelegate extends BlocDelegate {
   @override
@@ -36,7 +36,8 @@ class SimpleBlocDelegate extends BlocDelegate {
 
 Future<Box> openBox() async {
   if (kIsWeb) {
-    return Hive.openBox<String>("settings");
+    Hive.registerAdapter(UserAdapter());
+    return Hive.openBox("settings");
   }
 
   String path;
@@ -49,8 +50,11 @@ Future<Box> openBox() async {
     path = (await getApplicationDocumentsDirectory()).path;
   }
 
-  Hive.init(path);
-  return Hive.openBox<String>("settings");
+  Hive
+    ..init(path)
+    ..registerAdapter(UserAdapter());
+
+  return Hive.openBox("settings");
 }
 
 void main() async {

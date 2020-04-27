@@ -1,7 +1,8 @@
 import 'package:build_context/build_context.dart';
 import 'package:flutter/material.dart';
-import 'package:nosso_saldo/models/friend.dart';
-import 'package:nosso_saldo/shared/friend_tile.dart';
+
+import '../../models/models.dart';
+import '../../shared/friend_tile.dart';
 
 class ContactAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Contact contact;

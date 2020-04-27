@@ -21,29 +21,29 @@ class ListFriends extends StatelessWidget {
   }
 
   void _blocListener(BuildContext context, ContactsState state) {
-    if (state is ContactsError) {
+    if (state is UnloadedContacts) {
       Toogle.show(context: context, label: state.message);
     }
   }
 
   Widget _blocBuilder(BuildContext context, ContactsState state) {
-    if (state is ContactsError) return SizedBox();
+    if (state is UnloadedContacts) return SizedBox();
     return _mapStateToWidget(context, state);
   }
 
   Widget _mapStateToWidget(BuildContext context, state) {
-    if (state is ContactsLoading) {
+    if (state is LoadingContacts) {
       return ContactTile.placeholderList(
         context,
         itemCount: itemCount ?? 1,
       );
     }
 
-    if (state is ContactsEmpty) {
+    if (state is EmptyContacts) {
       return _empty(context);
     }
 
-    if (state is ContactsSuccess) {
+    if (state is LoadedContacts) {
       itemCount = state.contacts.length;
       return _listFriends(state.contacts);
     }

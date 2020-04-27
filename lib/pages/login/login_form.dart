@@ -57,12 +57,12 @@ class _LoginFormState extends State<LoginForm> {
   Widget _loginBtn(BuildContext context, LoginState state) {
     return Btn(
       label: "Entrar",
-      onPressed: state is! LoginLoading ? _login : null,
+      onPressed: state is! LoggingIn ? _login : null,
     );
   }
 
   void _listenerState(BuildContext context, LoginState state) {
-    if (state is LoginFailure) {
+    if (state is NotLoggedIn) {
       Toogle.show(context: context, label: state.message);
     }
   }

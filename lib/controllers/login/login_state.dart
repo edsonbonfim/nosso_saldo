@@ -1,16 +1,10 @@
-import 'package:meta/meta.dart';
-
 abstract class LoginState {}
 
-class LoginInitial extends LoginState {}
+class Login extends LoginState {}
 
-class LoginLoading extends LoginState {}
+class LoggingIn extends LoginState {}
 
-class LoginFailure extends LoginState {
+class NotLoggedIn extends LoginState {
+  NotLoggedIn(this.message);
   final String message;
-
-  LoginFailure({@required this.message});
-
-  @override
-  String toString() => 'LoginFailure { error: $message }';
 }
