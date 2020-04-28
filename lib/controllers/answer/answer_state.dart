@@ -1,19 +1,19 @@
-abstract class AnswerInviteState {}
+abstract class AnswerState {}
 
-abstract class AnswerInviteStateMessage extends AnswerInviteState {
+abstract class AnswerStateMessage extends AnswerState {
   String get message;
 }
 
-class InitialAnswer extends AnswerInviteState {}
+class InitialAnswer extends AnswerState {}
 
-class SendingAnswer extends AnswerInviteState {}
+class SendingAnswer extends AnswerState {}
 
-class UnsendedAnswer extends AnswerInviteStateMessage {
+class UnsendedAnswer extends AnswerStateMessage {
   UnsendedAnswer(this.message);
   final String message;
 }
 
-class SendedAnswer extends AnswerInviteStateMessage {
+class SendedAnswer extends AnswerStateMessage {
   SendedAnswer(this.message);
   final String message;
 }

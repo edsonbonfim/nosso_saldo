@@ -1,42 +1,65 @@
-import 'package:build_context/build_context.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nosso_saldo/controllers/contact/contact_bloc.dart';
-import 'package:nosso_saldo/pages/contact/contact_page.dart';
 
-import '../../controllers/contacts/contacts_bloc.dart';
-import '../../models/friend.dart';
-import '../../shared/custom_card.dart';
-import '../../shared/friend_tile.dart';
+import '../../controllers/controllers.dart';
+import '../../models/models.dart';
+import '../../widgets.dart';
 
 class ContactsList extends StatelessWidget {
-  final List<Contact> contacts;
-
-  const ContactsList({
-    Key key,
-    @required this.contacts,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    if (!context.isPhone) return _list();
-
-    return RefreshIndicator(
-      onRefresh: context.bloc<ContactsBloc>().onRefresh,
-      child: _list(),
+    return BlocBuilder<ContactsBloc, ContactsState>(
+      builder: _contactsBuilderBloc,
     );
   }
 
-  Widget _list() {
-    return CustomCard(
-      child: ListView.builder(
-        itemCount: contacts.length,
-        itemBuilder: (context, i) => ContactTile(
-          contacts[i],
-          onTap: () => _onTap(context, contacts[i]),
+  Widget _contactsBuilderBloc(BuildContext context, ContactsState state) {
+    if (state is LoadingContacts) {
+      return ContactTile.placeholderList(context, itemCount: 3);
+    }
+
+    if (state is LoadedContacts) {
+      return _loadedContacts(context, state.contacts);
+    }
+
+    return SizedBox();
+  }
+
+  Widget _loadedContacts(BuildContext context, List<Contact> contacts) {
+    return Column(
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 15,
+            vertical: 5,
+          ),
+          color: context.scaffoldBackgroundColor,
+          child: Text(
+            "CONTATOS",
+            style: TextStyle(
+              fontSize: 12,
+            ),
+          ),
         ),
-      ),
+        _listContacts(contacts),
+      ],
+    );
+  }
+
+  Widget _listContacts(List<Contact> contacts) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: ScrollPhysics(),
+      itemCount: contacts.length,
+      itemBuilder: (context, i) => _contactItemBuilder(context, contacts[i]),
+    );
+  }
+
+  Widget _contactItemBuilder(BuildContext context, Contact contact) {
+    return ContactTile(
+      contact,
+      onTap: () => _onTap(context, contact),
     );
   }
 

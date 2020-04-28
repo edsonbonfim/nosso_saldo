@@ -185,13 +185,19 @@ class _ContactPageState extends State<ContactPage>
       ],
       btn: Btn(
         label: "Salvar",
-        onPressed: () => transactionBloc.sendTransaction(Transaction(
-          cost: double.parse(costController.text),
-          message: messageController.text,
-          date: DateTime.now(),
-          createdBy: context.bloc<AuthenticationBloc>().user.name,
-          createdByEmail: context.bloc<AuthenticationBloc>().user.email,
-        )),
+        onPressed: () {
+          var cost = costController.text.replaceAll(",", ".");
+          return transactionBloc.sendTransaction(
+            contact,
+            Transaction(
+              cost: double.parse(cost),
+              message: messageController.text,
+              date: DateTime.now(),
+              createdBy: context.bloc<AuthenticationBloc>().user.name,
+              createdByEmail: context.bloc<AuthenticationBloc>().user.email,
+            ),
+          );
+        },
       ),
     );
   }

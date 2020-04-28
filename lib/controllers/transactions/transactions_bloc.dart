@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:nosso_saldo/controllers/controllers.dart';
 
 import '../../models/transaction.dart';
 import '../authentication/authentication_bloc.dart';
@@ -25,7 +26,14 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
   Stream<TransactionsState> mapEventToState(TransactionsEvent event) async* {
     if (event is AddTransaction) {
       yield LoadingTransactions();
-      yield LoaddedTransactions(transactions..add(event.transaction));
+
+      event.contact.setBalance(
+        event.contact.myBalance.value + event.transaction.cost,
+      );
+
+      yield LoaddedTransactions(
+        <Transaction>[event.transaction, ...transactions],
+      );
     }
 
     if (event is FetchTransactions) {

@@ -1,4 +1,4 @@
-import '../../models/friend.dart';
+import '../../models/models.dart';
 
 abstract class InvitesState {}
 
@@ -14,6 +14,6 @@ class UnloadedInvites extends InvitesState {
 }
 
 class LoadedInvites extends InvitesState {
-  LoadedInvites(this.friends);
-  final List<Contact> friends;
+  LoadedInvites(this.contacts);
+  final List<Contact> contacts;
 }

@@ -1,18 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nosso_saldo/controllers/invite/invite.dart';
-import 'package:rubber/rubber.dart';
 
-import '../../controllers/authentication/authentication_bloc.dart';
-import '../../controllers/contacts/contacts_bloc.dart';
-import '../../controllers/contacts/contacts_state.dart';
-import '../../shared/btn.dart';
-import '../../shared/friend_tile.dart';
-import '../../shared/input.dart';
-import '../../shared/modal.dart';
-import '../../shared/toogle.dart';
-import 'contacts_app_bar.dart';
-import 'contacts_list.dart';
+import '../../controllers/controllers.dart';
+import '../../widgets.dart';
 
 class ContactsPage extends StatefulWidget {
   @override
@@ -22,14 +11,20 @@ class ContactsPage extends StatefulWidget {
 class _ContactsPageState extends State<ContactsPage>
     with SingleTickerProviderStateMixin {
   InviteBloc inviteBloc;
+  InvitesBloc invitesBloc;
+
   TextEditingController emailController;
   RubberAnimationController animationController;
 
   @override
   void initState() {
     super.initState();
+
     inviteBloc = InviteBloc(context.bloc<AuthenticationBloc>());
+    invitesBloc = InvitesBloc(context.bloc<AuthenticationBloc>());
+
     emailController = TextEditingController();
+
     animationController = RubberAnimationController(
       vsync: this,
       upperBoundValue: AnimationControllerValue(pixel: 220),
@@ -40,24 +35,40 @@ class _ContactsPageState extends State<ContactsPage>
 
   @override
   void dispose() {
-    emailController.dispose();
     inviteBloc.close();
+    invitesBloc.close();
+
+    emailController.dispose();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: ContactsAppBar(),
-      body: BlocListener<InviteBloc, InviteState>(
-        bloc: inviteBloc,
-        listener: _inviteBlocListener,
-        child: RubberBottomSheet(
-          animationController: animationController,
-          lowerLayer: BlocBuilder<ContactsBloc, ContactsState>(
-            builder: _contactsBlocBuilder,
+      body: BlocProvider.value(
+        value: invitesBloc,
+        child: BlocListener<InviteBloc, InviteState>(
+          bloc: inviteBloc,
+          listener: _inviteBlocListener,
+          child: RubberBottomSheet(
+            animationController: animationController,
+            lowerLayer: RefreshIndicator(
+              onRefresh: () async {
+                invitesBloc.onRefresh();
+                context.bloc<ContactsBloc>().onRefresh();
+              },
+              child: ListView(
+                children: [
+                  ContactsInvites(),
+                  ContactsList(),
+                ],
+              ),
+            ),
+            upperLayer: _modal(),
           ),
-          upperLayer: _modal(),
         ),
       ),
       floatingActionButton: ValueListenableBuilder<AnimationState>(
@@ -84,20 +95,9 @@ class _ContactsPageState extends State<ContactsPage>
     }
   }
 
-  Widget _contactsBlocBuilder(BuildContext context, ContactsState state) {
-    if (state is LoadingContacts) {
-      return ContactTile.placeholderList(context, itemCount: 3);
-    }
-
-    if (state is LoadedContacts) {
-      return ContactsList(contacts: state.contacts);
-    }
-
-    return SizedBox();
-  }
-
   Widget _floatingActionButton() {
     return FloatingActionButton(
+      backgroundColor: context.scaffoldBackgroundColor,
       onPressed: animationController.expand,
       child: Icon(Icons.person_add),
     );

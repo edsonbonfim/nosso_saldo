@@ -1,8 +1,7 @@
 import 'package:bloc/bloc.dart';
 
-import '../../models/friend.dart';
-import 'contact_event.dart';
-import 'contact_state.dart';
+import '../../models/models.dart';
+import '../controllers.dart';
 
 class ContactBloc extends Bloc<ContactEvent, ContactState> {
   Contact contact;

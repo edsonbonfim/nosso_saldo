@@ -1,15 +1,15 @@
 import 'package:meta/meta.dart';
 
-enum Invites { accept, reject }
+enum Answers { accept, reject }
 
-abstract class AnswerInviteEvent {}
+abstract class AnswerEvent {}
 
-class SendAnswer extends AnswerInviteEvent {
+class SendAnswer extends AnswerEvent {
   SendAnswer({
     @required this.email,
-    @required this.invite,
+    @required this.answer,
   });
 
   final String email;
-  final Invites invite;
+  final Answers answer;
 }

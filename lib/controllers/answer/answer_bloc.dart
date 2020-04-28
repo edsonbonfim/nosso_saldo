@@ -1,34 +1,44 @@
 import 'package:bloc/bloc.dart';
 
-import '../authentication/authentication.dart';
-import 'answer_event.dart';
-import 'answer_state.dart';
+import '../controllers.dart';
 
-class AnswerInviteBloc extends Bloc<AnswerInviteEvent, AnswerInviteState> {
-  final AuthenticationBloc authentication;
+class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
+  AnswerBloc(this.invitesBloc, this.contactsBloc);
 
-  AnswerInviteBloc(this.authentication);
+  final InvitesBloc invitesBloc;
+  final ContactsBloc contactsBloc;
 
-  @override
-  AnswerInviteState get initialState => InitialAnswer();
+  AuthenticationBloc get authenticationBloc => contactsBloc.authenticationBloc;
 
   @override
-  Stream<AnswerInviteState> mapEventToState(AnswerInviteEvent event) async* {
+  AnswerState get initialState => InitialAnswer();
+
+  @override
+  Stream<AnswerState> mapEventToState(AnswerEvent event) async* {
     if (event is SendAnswer) {
       yield SendingAnswer();
 
       try {
-        var message = await authentication.repository.answerInvite(
+        var message = await authenticationBloc.repository.answerInvite(
           email: event.email,
-          invite: event.invite,
+          invite: event.answer,
         );
 
         yield SendedAnswer(message);
+
+        invitesBloc.onRefresh();
+        contactsBloc.onRefresh();
       } on FormatException catch (ex) {
         yield UnsendedAnswer(ex.message);
       } on Exception {
         yield UnsendedAnswer("Ocorreu um erro, tente novamente mais tarde");
       }
+
+      yield InitialAnswer();
     }
+  }
+
+  void sendAnswer(String email, Answers answer) {
+    add(SendAnswer(email: email, answer: answer));
   }
 }

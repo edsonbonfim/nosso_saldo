@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:nosso_saldo/models/models.dart';
 
 import '../../models/transaction.dart';
 import '../authentication/authentication.dart';
@@ -21,12 +22,27 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   Stream<TransactionState> mapEventToState(TransactionEvent event) async* {
     if (event is SendTransaction) {
       yield SendingTransaction();
-      yield SendedTransaction("Cadastrado");
+
+      try {
+        var message = await authenticationBloc.repository.sendTransaction(
+          event.contact,
+          event.transaction,
+        );
+
+        yield SendedTransaction(message);
+
+        transactionsBloc.add(AddTransaction(event.contact, event.transaction));
+      } on FormatException catch (ex) {
+        yield UnsendedTransaction(ex.message);
+      } on Exception {
+        yield UnsendedTransaction("Ocorreu um erro, tente novamente");
+      }
+
+      yield InitialTransaction();
     }
   }
 
-  sendTransaction(Transaction transaction) {
-    add(SendTransaction(transaction));
-    transactionsBloc.add(AddTransaction(transaction));
+  sendTransaction(Contact contact, Transaction transaction) {
+    add(SendTransaction(contact, transaction));
   }
 }

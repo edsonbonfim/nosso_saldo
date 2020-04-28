@@ -5,7 +5,9 @@ import 'invites_event.dart';
 import 'invites_state.dart';
 
 class InvitesBloc extends Bloc<ListInvitesEvent, InvitesState> {
-  InvitesBloc(this.authenticationBloc);
+  InvitesBloc(this.authenticationBloc) {
+    fetchInvites();
+  }
 
   final AuthenticationBloc authenticationBloc;
 
@@ -26,4 +28,8 @@ class InvitesBloc extends Bloc<ListInvitesEvent, InvitesState> {
       }
     }
   }
+
+  void fetchInvites() => add(FetchInvites());
+
+  Future<void> onRefresh() async => fetchInvites();
 }

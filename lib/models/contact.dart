@@ -1,18 +1,23 @@
+import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 
 class Contact {
-  final String id;
-  final String name;
-
-  String email;
-  double myBalance;
-
   Contact({
     @required this.id,
     @required this.name,
     this.email,
-    this.myBalance,
-  });
+    double myBalance,
+  }) {
+    setBalance(myBalance);
+  }
+
+  final String id;
+  final String name;
+  final String email;
+
+  final myBalance = ValueNotifier<double>(0.0);
+
+  void setBalance(double value) => myBalance.value = value;
 
   factory Contact.fromJson(Map<String, dynamic> json) {
     return Contact(

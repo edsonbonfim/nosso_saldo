@@ -1,4 +1,4 @@
-import '../../models/friend.dart';
+import '../../models/models.dart';
 
 abstract class ContactEvent {}
 

@@ -119,12 +119,12 @@ class UserRepository {
 
   Future<String> answerInvite({
     @required String email,
-    @required Invites invite,
+    @required Answers invite,
   }) async {
     var response = await http.put(
       "$url/friendRequest/update",
       body: jsonEncode({
-        invite == Invites.accept ? "emailAccepted" : "emailRejected": email,
+        invite == Answers.accept ? "emailAccepted" : "emailRejected": email,
       }),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
@@ -181,5 +181,35 @@ class UserRepository {
     var rawTransactions = data["payload"] as List;
 
     return rawTransactions.map((t) => Transaction.fromJson(t)).toList();
+  }
+
+  Future<String> sendTransaction(
+    Contact contact,
+    Transaction transaction,
+  ) async {
+    var response = await http.put(
+      "$url/balance/update",
+      body: jsonEncode({
+        "balanceId": contact.id,
+        "movimentation": {
+          "cost": transaction.cost,
+          "message": transaction.message,
+        }
+      }),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        HttpHeaders.authorizationHeader: "Bearer ${user.token}",
+      },
+    );
+
+    var data = jsonDecode(response.body) as Map;
+
+    if (data["err"] != null || data["message"] == null) {
+      throw FormatException(
+        data["err"] ?? "Ocorreu um erro, tente novamente",
+      );
+    }
+
+    return data["message"];
   }
 }
