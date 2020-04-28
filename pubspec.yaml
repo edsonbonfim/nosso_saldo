@@ -17,8 +17,9 @@ dependencies:
   flutter_bloc: ^4.0.0
   path_provider: ^1.6.7
   adaptive_dialog: ^0.4.0
-  build_context:
-    path: ../build_context
+  # build_context:
+  #   path: ../build_context
+  build_context: ^1.1.0
 
 flutter:
   uses-material-design: true
