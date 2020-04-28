@@ -39,9 +39,11 @@ packages:
   build_context:
     dependency: "direct main"
     description:
-      name: build_context
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: fed7dedacf83e9378a7d3c7bdeb69e0cd052ac23
+      url: "https://github.com/EdsonOnildoJR/build_context"
+    source: git
     version: "1.1.0"
   charcode:
     dependency: transitive

@@ -68,6 +68,7 @@ class LoginPage extends StatelessWidget {
     return Column(
       children: [
         LoginForm(),
+        SizedBox(height: 5),
         BlocBuilder<LoginBloc, LoginState>(builder: _signUpBtn),
       ],
     );

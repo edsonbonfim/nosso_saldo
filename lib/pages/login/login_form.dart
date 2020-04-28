@@ -42,11 +42,13 @@ class _LoginFormState extends State<LoginForm> {
               hintText: "E-mail",
               controller: _emailController,
             ),
+            SizedBox(height: 10),
             Input(
               hintText: "Senha",
               controller: _passwordController,
               obscureText: true,
             ),
+            SizedBox(height: 10),
             BlocBuilder<LoginBloc, LoginState>(builder: _loginBtn),
           ],
         ),
